@@ -1,4 +1,4 @@
-import { Ticket } from "./ticket.js";
+import { Ticket } from "./ticket";
 
 test("Test ticket:", () => {
   let expectedToken = new Uint8Array([
@@ -76,5 +76,5 @@ test("Test ticket:", () => {
   ticket.ParseBytes(input);
   expect(ticket).not.toBeNull();
   expect(ticket.ID).toBe(65535);
-  expect(ticket.Token.toString()).toBe(expectedToken.toString());
+  expect(ticket.Token).toEqual(expectedToken);
 });

@@ -161,11 +161,11 @@ export class Proxy implements IProxy {
           );
 
           let valTicketID = respRegisterConnection.ticketID;
-          let temp = new Uint8Array(1);
-          temp[0] = valTicketID;
+          // let temp = new Uint16Array(1);
+          // temp[0] = valTicketID;
 
-          serverAad[0] = temp[0];
-          serverAad[1] = temp[0] >> 8;
+          serverAad[0] = valTicketID;
+          serverAad[1] = valTicketID >> 8;
 
           serverAad.set(Buffer.from(respRegisterConnection.hubAddress), 2);
           serverAad.set(
@@ -224,15 +224,15 @@ configFile.fromFile("./src/config/cso_key.json");
 let proxy = new Proxy(configFile);
 proxy.exchangeKey().then(
   (serverKey: ServerKey) => {
-    // proxy.registerConnection(serverKey).then(
-    //   (serverTicket: ServerTicket) => {
-    //     console.log(serverTicket);
-    //   },
-    //   () => {
-    //     console.log("Error registerConnection");
-    //   }
-    // );
-    console.log(serverKey);
+    proxy.registerConnection(serverKey).then(
+      (serverTicket: ServerTicket) => {
+        console.log(serverTicket);
+      },
+      () => {
+        console.log("Error registerConnection");
+      }
+    );
+    // console.log(serverKey);
   },
   () => {
     console.log("Error exchangeKey");

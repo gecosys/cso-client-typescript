@@ -2,9 +2,9 @@
 const MaxConnectionNameLength = 36;
 
 // MessageType is type of message (data) in Cipher
-let MessageType: Uint8Array[0];
+// let MessageType: Uint8Array[0];
 
-export enum type {
+export enum MessageType {
   // TypeActivation is type of activation message
   TypeActivation = 0x02,
 
@@ -151,7 +151,7 @@ export class Cipher {
     this.Sign = sign;
   }
 
-  public GetAad() {
+  public GetAad(): Uint8Array {
     return BuildAad(
       this.MessageID,
       this.MessageTag,
@@ -165,7 +165,7 @@ export class Cipher {
   }
 
   // GetRawBytes returns raw bytes of Cipher
-  public GetRawBytes() {
+  public GetRawBytes(): Uint8Array {
     return BuildRawBytes(
       this.MessageID,
       this.MessageTag,
@@ -179,7 +179,7 @@ export class Cipher {
     );
   }
 
-  public IntoBytes() {
+  public IntoBytes(): Uint8Array {
     if (this.IsEncrypted) {
       return BuildCipherBytes(
         this.MessageID,
@@ -209,7 +209,7 @@ export class Cipher {
 }
 
 // BuildCipherBytes builds bytes of Cipher (encrypted mode)
-function BuildCipherBytes(
+export function BuildCipherBytes(
   msgID: bigint,
   msgTag: bigint,
   msgType: Uint8Array[0],
@@ -220,7 +220,7 @@ function BuildCipherBytes(
   iv: Uint8Array,
   data: Uint8Array,
   authenTag: Uint8Array
-) {
+): Uint8Array {
   return buildBytes(
     msgID,
     msgTag,
@@ -248,7 +248,7 @@ export function BuildRawBytes(
   request: boolean,
   name: string,
   data: Uint8Array
-) {
+): Uint8Array {
   let lenName = name.length;
   if (lenName == 0 || lenName > MaxConnectionNameLength) {
     return null;
@@ -310,13 +310,10 @@ export function BuildRawBytes(
 
   let nameBytes = new TextEncoder().encode(name);
 
-  for (let i = 0; i < nameBytes.byteLength; i++) {
-    buffer[fixedLen + i] = nameBytes[i];
-  }
+  buffer.set(nameBytes, fixedLen);
+
   if (lenData > 0) {
-    for (let i = 0; i < data.byteLength; i++) {
-      buffer[fixedLen + lenName + i] = data[i];
-    }
+    buffer.set(data, fixedLen + lenName);
   }
   return buffer;
 }
@@ -331,7 +328,7 @@ export function BuildAad(
   last: boolean,
   request: boolean,
   name: string
-) {
+): Uint8Array {
   let lenName = name.length;
   if (lenName == 0 || lenName > MaxConnectionNameLength) {
     return null;
@@ -400,7 +397,7 @@ export function BuildAad(
 }
 
 // BuildNoCipherBytes builds bytes of Cipher (unencrypted mode)
-function BuildNoCipherBytes(
+export function BuildNoCipherBytes(
   msgID: bigint,
   tag: bigint,
   msgType: Uint8Array[0],
@@ -410,7 +407,7 @@ function BuildNoCipherBytes(
   name: string,
   data: Uint8Array,
   sign: Uint8Array
-) {
+): Uint8Array {
   let empty = new Uint8Array(0);
   return buildBytes(
     msgID,
@@ -441,7 +438,7 @@ export function buildBytes(
   data: Uint8Array,
   authenTag: Uint8Array,
   sign: Uint8Array
-) {
+): Uint8Array {
   let lenName = name.length;
   if (lenName == 0 || lenName > MaxConnectionNameLength) {
     return null;
@@ -513,28 +510,17 @@ export function buildBytes(
   }
   let posData = fixedLen + lenAuthenTag;
   if (encrypted) {
-    for (let i = 0; i < authenTag.length; i++) {
-      buffer[fixedLen + i] = authenTag[i];
-    }
-    for (let i = 0; i < iv.length; i++) {
-      buffer[posData + i] = iv[i];
-    }
+    buffer.set(authenTag, fixedLen);
+    buffer.set(iv, posData);
     posData += lenIV;
   } else {
-    for (let i = 0; i < sign.byteLength; i++) {
-      buffer[fixedLen + i] = sign[i];
-    }
+    buffer.set(sign, fixedLen);
     posData += lenSign;
   }
-  let temp = new TextEncoder().encode(name);
-  for (let i = 0; i < temp.length; i++) {
-    buffer[posData + i] = temp[i];
-  }
+  buffer.set(new TextEncoder().encode(name), posData);
   posData += lenName;
   if (lenData > 0) {
-    for (let i = 0; i < data.length; i++) {
-      buffer[posData + i] = data[i];
-    }
+    buffer.set(data, posData);
   }
   return buffer;
 }

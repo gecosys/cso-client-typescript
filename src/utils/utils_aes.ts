@@ -2,8 +2,12 @@ import * as Crypto from "crypto";
 const ALGORITHM = "aes-256-gcm";
 
 // EncryptAES encrypts data by AES with GCM mode
-export function EncryptAES(key: Uint8Array, data: Uint8Array, aad: Uint8Array) {
-  const iv = new Uint8Array(Crypto.randomBytes(16));
+export function EncryptAES(
+  key: Uint8Array,
+  data: Uint8Array,
+  aad: Uint8Array
+): { iv: Uint8Array; tag: Uint8Array; result: Uint8Array } {
+  const iv = new Uint8Array(Crypto.randomBytes(12));
 
   const cipher = Crypto.createCipheriv(ALGORITHM, key, iv);
   cipher.setAAD(aad);
@@ -12,8 +16,8 @@ export function EncryptAES(key: Uint8Array, data: Uint8Array, aad: Uint8Array) {
   const tag = new Uint8Array(cipher.getAuthTag());
 
   let output = {
-    IV: iv,
-    TAG: tag,
+    iv: iv,
+    tag: tag,
     result: new Uint8Array(encrypted),
   };
 

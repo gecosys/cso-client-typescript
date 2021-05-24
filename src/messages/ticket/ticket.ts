@@ -17,7 +17,7 @@ export class Ticket {
   }
 
   // BuildBytes returns bytes of Ticket
-  public BuildBytes(id: Uint16Array[0], token: Uint8Array) {
+  public BuildBytes(id: Uint16Array[0], token: Uint8Array): Uint8Array {
     if (token.byteLength != 32) {
       return null;
     }
@@ -25,9 +25,7 @@ export class Ticket {
     let buffer = new Uint8Array(34);
     buffer[0] = id[0];
     buffer[1] = id[0] >> 8;
-    for (let i = 0; i < 32; i++) {
-      buffer[i + 2] = token[i];
-    }
+    buffer.set(token, 2);
     return buffer;
   }
 }

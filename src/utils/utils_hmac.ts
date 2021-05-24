@@ -9,7 +9,7 @@ export function ValidateHMAC(
   key: Uint8Array,
   data: Uint8Array,
   expectedHMAC: Uint8Array
-) {
+): boolean {
   let result = CalcHMAC(key, data);
   return result.toString() == expectedHMAC.toString();
 }

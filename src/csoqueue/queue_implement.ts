@@ -26,7 +26,7 @@ export class Queue implements IQueue {
     return false;
   }
 
-  nextMessage() {
+  nextMessage(): ItemQueue {
     let limitSecond = BigInt(3);
     let now = BigInt(new Date().getTime());
     let nextItem: ItemQueue;

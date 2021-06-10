@@ -25,10 +25,10 @@ export class ServerTicket {
   serverSecretKey: Uint8Array;
 
   constructor(
-    hubAddress: string,
-    ticketID: number,
-    ticketBytes: Uint8Array,
-    serverSecretKey: Uint8Array
+    hubAddress?: string,
+    ticketID?: number,
+    ticketBytes?: Uint8Array,
+    serverSecretKey?: Uint8Array
   ) {
     if (hubAddress && ticketID && ticketBytes && serverSecretKey) {
       this.hubAddress = hubAddress;

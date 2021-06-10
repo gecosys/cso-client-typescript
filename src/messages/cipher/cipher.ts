@@ -27,7 +27,7 @@ export enum MessageType {
 // Cipher is encrypted message
 export class Cipher {
   MessageID: bigint;
-  MessageType: Uint8Array[0];
+  MessageType: MessageType;
   MessageTag: bigint;
   IsFirst: boolean;
   IsLast: boolean;
@@ -329,7 +329,7 @@ export function BuildAad(
   request: boolean,
   name: string
 ): Uint8Array {
-  let lenName = name.length;
+  let lenName = name?.length;
   if (lenName == 0 || lenName > MaxConnectionNameLength) {
     return null;
   }

@@ -2,7 +2,7 @@ export class ItemQueue {
   msgID: bigint;
   msgTag: bigint;
   recvName: string;
-  content: number[];
+  content: Uint8Array;
   isEncrypted: boolean;
   isCached: boolean;
   isFirst: boolean;
@@ -16,7 +16,7 @@ export class ItemQueue {
     msgID: bigint,
     msgTag: bigint,
     recvName: string,
-    content: number[],
+    content: Uint8Array,
     isEncrypted: boolean,
     isCached: boolean,
     isFirst: boolean,

@@ -23,7 +23,6 @@ export class Parser implements IParser {
     if (msg == null) {
       return null;
     }
-
     if (msg.IsEncrypted == false) {
       let rawBytes = msg.GetRawBytes();
       if (rawBytes === null) {
@@ -37,7 +36,7 @@ export class Parser implements IParser {
     }
 
     let aad = msg.GetAad();
-    if (aad != null) {
+    if (aad === null) {
       return null;
     }
 
@@ -48,16 +47,12 @@ export class Parser implements IParser {
     }
 
     msg.IsEncrypted = false;
-    // TODO
     msg.IV = new Uint8Array();
     msg.AuthenTag = new Uint8Array();
     return msg;
   }
 
-  BuildActivateMessage(
-    ticketID: Uint32Array[1],
-    ticketBytes: Uint8Array
-  ): Uint8Array {
+  BuildActivateMessage(ticketID: number, ticketBytes: Uint8Array): Uint8Array {
     let name = ticketID.toString();
     let aad = BuildAad(
       BigInt(0),
@@ -115,7 +110,7 @@ export class Parser implements IParser {
         return null;
       }
       let sign = CalcHMAC(this.secretKey, rawBytes);
-      if (sign != null) {
+      if (sign === null) {
         return null;
       }
       return BuildNoCipherBytes(

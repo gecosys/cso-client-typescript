@@ -218,23 +218,23 @@ export class Proxy implements IProxy {
   }
 }
 
-let configFile = new Config();
-configFile.fromFile("./src/config/cso_key.json");
+// let configFile = new Config();
+// configFile.fromFile("./src/config/cso_key.json");
 
-let proxy = new Proxy(configFile);
-proxy.exchangeKey().then(
-  (serverKey: ServerKey) => {
-    proxy.registerConnection(serverKey).then(
-      (serverTicket: ServerTicket) => {
-        console.log(serverTicket);
-      },
-      () => {
-        console.log("Error registerConnection");
-      }
-    );
-    // console.log(serverKey);
-  },
-  () => {
-    console.log("Error exchangeKey");
-  }
-);
+// let proxy = new Proxy(configFile);
+// proxy.exchangeKey().then(
+//   (serverKey: ServerKey) => {
+//     proxy.registerConnection(serverKey).then(
+//       (serverTicket: ServerTicket) => {
+//         console.log(serverTicket);
+//       },
+//       () => {
+//         console.log("Error registerConnection");
+//       }
+//     );
+//     // console.log(serverKey);
+//   },
+//   () => {
+//     console.log("Error exchangeKey");
+//   }
+// );
